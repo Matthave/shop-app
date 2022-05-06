@@ -1,4 +1,5 @@
 import React from 'react';
+import "./css/styles.min.css"
 
 function App() {
   return (
