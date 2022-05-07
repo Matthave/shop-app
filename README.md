@@ -1,4 +1,4 @@
-Pobranie projektu na komputer
+# Pobranie projektu na komputer
 1. Otworzenie terminalu na komputerze
 2. Pobranie projektu poprzez wpisanie komendy **git clone https://github.com/Matthave/shop-app.git**
 3. Odpalenie projektu w VSC
