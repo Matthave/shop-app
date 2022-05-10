@@ -1,10 +1,11 @@
 import React from 'react';
 import "./css/styles.min.css"
+import Calendar from './components/Calendar/Calendar';
 
-function App() {
+const App: React.FC = () => {
   return (
     <div className="App">
-      Shop App
+      <Calendar/>
     </div>
   );
 }
