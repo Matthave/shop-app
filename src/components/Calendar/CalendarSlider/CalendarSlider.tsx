@@ -1,9 +1,18 @@
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faArrowRight, faArrowLeft } from '@fortawesome/free-solid-svg-icons'
 
+interface days {
+    id: number,
+    breakfast: string,
+    branch: string,
+    lunch: string,
+    tea: string,
+    dinner: string
+}
+
 const CalendarSlider: 
 React.FC<{
-    currentMonth: {days: Number[], id: string, month: string},
+    currentMonth: {days: days[], id: string, month: string},
     currentYear: number,
     calendarSliderFunc: (direction: string) => void }
     > = ({currentMonth, currentYear, calendarSliderFunc}) => {
