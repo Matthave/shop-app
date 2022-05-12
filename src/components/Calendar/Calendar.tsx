@@ -1,6 +1,8 @@
 import { useState, useEffect } from "react";
 import CalendarSlider from "./CalendarSlider/CalendarSlider";
 import { prepareDayFormat } from "../../utils/prepareDateFormat";
+import CalendarDay from "./CalendarDay/CalendarDay";
+import { setDaysToMonth } from "../../utils/setDaysToMonth";
 
 const d = new Date();
 const Calendar: React.FC = () => {
@@ -8,8 +10,7 @@ const Calendar: React.FC = () => {
     const [year, setYear] = useState(d.getFullYear());
     const [firstDayOfMonth, setFirstDayOfMonth] = useState({id: 0, value: 'Mon'});
     const markCurrentDay =  prepareDayFormat(d.getMonth() + 1) === month;
-    const day = String(d.getDate()).padStart(2, '0');
-    const isLeapYear = year % 4 === 0;
+    const isLeapYear = year % 4 === 0 ? 29 : 28 ;
 
     const daysArr = [
         {id: 0, value: 'Mon'},
@@ -49,25 +50,26 @@ const Calendar: React.FC = () => {
         setMonth(anotherMonthPrepString)
      }
 
-     const monthsArr = [
-        { id: '01', month: 'Jan', days: Array.from(Array(31 + firstDayOfMonth.id).keys()) },
-        { id: '02', month: 'Feb', days: isLeapYear ? 
-        Array.from(Array(29 + firstDayOfMonth.id).keys()) 
-        : Array.from(Array(28 + firstDayOfMonth.id).keys()) },
-        { id: '03', month: 'Mar', days: Array.from(Array(31 + firstDayOfMonth.id).keys()) },
-        { id: '04', month: 'Apr', days: Array.from(Array(30 + firstDayOfMonth.id).keys()) },
-        { id: '05', month: 'May', days: Array.from(Array(31 + firstDayOfMonth.id).keys()) },
-        { id: '06', month: 'Jun', days: Array.from(Array(30 + firstDayOfMonth.id).keys()) },
-        { id: '07', month: 'Jul', days: Array.from(Array(31 + firstDayOfMonth.id).keys()) },
-        { id: '08', month: 'Aug', days: Array.from(Array(31 + firstDayOfMonth.id).keys()) },
-        { id: '09', month: 'Sep', days: Array.from(Array(30 + firstDayOfMonth.id).keys()) },
-        { id: '10', month: 'Oct', days: Array.from(Array(31 + firstDayOfMonth.id).keys()) },
-        { id: '11', month: 'Nov', days: Array.from(Array(30 + firstDayOfMonth.id).keys()) },
-        { id: '12', month: 'Dec', days: Array.from(Array(31 + firstDayOfMonth.id).keys()) },
+     console.log(isLeapYear);
+
+     const monthsArrDefault = [
+        { id: '01', month: 'Jan', days: setDaysToMonth(31) },
+        { id: '02', month: 'Feb', days: setDaysToMonth(isLeapYear)},
+        { id: '03', month: 'Mar', days: setDaysToMonth(31) },
+        { id: '04', month: 'Apr', days: setDaysToMonth(30) },
+        { id: '05', month: 'May', days: setDaysToMonth(31) },
+        { id: '06', month: 'Jun', days: setDaysToMonth(30) },
+        { id: '07', month: 'Jul', days: setDaysToMonth(31) },
+        { id: '08', month: 'Aug', days: setDaysToMonth(31) },
+        { id: '09', month: 'Sep', days: setDaysToMonth(30) },
+        { id: '10', month: 'Oct', days: setDaysToMonth(31) },
+        { id: '11', month: 'Nov', days: setDaysToMonth(30) },
+        { id: '12', month: 'Dec', days: setDaysToMonth(31) },
     ];
 
+    const [monthsArr, setMonthsArr] = useState(monthsArrDefault);
     const currentMonth = monthsArr.find((currMonth) => currMonth.id === month);
-
+    const emptyDays = Array.from(Array(firstDayOfMonth.id).keys());
     return (
         <div className='calendar'>
         <CalendarSlider 
@@ -84,13 +86,15 @@ const Calendar: React.FC = () => {
                 <li className='calendar__weekDay'>Sun</li>
             </ul>
             <ul className="calendar__list">
+                {emptyDays.map((ele) => <li id={`empty__${ele}`} className='calendar__item calendar__item--empty'></li>)}
                 {currentMonth!.days instanceof Array ? currentMonth!.days.map((ele, index) => {
-                    if (firstDayOfMonth.value !== 'Mon' && firstDayOfMonth.id - 1 >= index ) 
-                    return <li key={`empty__${index}`} className='calendar__item calendar__item--empty'></li>
-                    else return (
-                        <li className={`calendar__item ${(index - (firstDayOfMonth.id + 1)) === parseInt(day) && markCurrentDay ? 'calendar__item--currentDay' : ''}`} 
-                        key={index + 1}>{index - firstDayOfMonth.id + 1}</li>
-                      )
+                    return <CalendarDay 
+                    index={index} 
+                    setMonthsArr={setMonthsArr}
+                    currentMonth={currentMonth!.month} 
+                    markCurrentDay={markCurrentDay}
+                    monthsArr={monthsArr}
+                    />
                 }) : '' }
             </ul>
         </div>
