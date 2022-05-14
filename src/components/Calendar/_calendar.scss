@@ -56,11 +56,33 @@
             border-color: #111;
         }
 
+        &--greenDot{
+            position: absolute;
+            top:60%;
+            left:82%;
+            transform: translate(-50%, -50%);
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background-color: rgb(33, 98, 33);
+            animation: greenDotAni .5s forwards ease-in-out;
+            
+            @keyframes greenDotAni {
+                0% { top: 60% }
+                50% { top:35% }
+                100% { top: 50%; }
+            }
+        }
+
         @include mq(small){
             &:hover {
                 font-size: 32px;
                 background-color: #3f51b5;
                 color: #fff;
+
+                & > .calendar__item--greenDot {
+                    background-color: rgb(61, 180, 61);
+                }
             }
         }
 

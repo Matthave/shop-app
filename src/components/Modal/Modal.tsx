@@ -1,4 +1,4 @@
-import { Dispatch, SetStateAction, useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { ModalPropMonthData, ModalPropMonthArrData } from '../../Types/types';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faXmark } from '@fortawesome/free-solid-svg-icons'
@@ -89,7 +89,7 @@ const Modal: React.FC <{
         return currentDaysMeal[mealType] !== '' ? currentDaysMeal[mealType] : 'Choose'
     }
 
-    return <div className='modal'>
+    return <div className={`modal ${!isLoading ? 'modal--onPosition' : ''}`}>
         {isLoading && <Loader/>}
         {!isLoading && 
             <>
@@ -101,7 +101,8 @@ const Modal: React.FC <{
                         <button className='modal__button'>{findProperlyMeal(category.name)}</button>
                         <ul className='modal__ul'>
                             {category.meals.map((meal: any) => {
-                                return <li key={`${meal.name}-${meal.category}`} className={`modal__li modal__li--${meal.category}`} onClick={() => mealItemClickHandler(meal.name, meal.category)}>{meal.name}</li>
+                                const activeMeal = findProperlyMeal(category.name) === meal.name ? 'modal__li--active' : '';
+                                return <li key={`${meal.name}-${meal.category}`} className={`modal__li modal__li--${meal.category} ${activeMeal}`} onClick={() => mealItemClickHandler(meal.name, meal.category)}>{meal.name}</li>
                             })}
                         </ul>
                     </div> 
