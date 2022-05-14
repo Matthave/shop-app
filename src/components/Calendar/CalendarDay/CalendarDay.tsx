@@ -9,7 +9,8 @@ const CalendarDay: React.FC<{
     markCurrentDay: boolean,
     monthsArr: { id: string; month: string; days: Days[]; }[],
     modalVisibilityHandler: (clickedMonthData: ModalPropMonthData, monthData: ModalPropMonthArrData) => void,
-}> = ({index, currentMonth, markCurrentDay, monthsArr, setMonthsArr, modalVisibilityHandler, active}) => {
+    greenDot: boolean,
+}> = ({index, currentMonth, markCurrentDay, monthsArr, setMonthsArr, modalVisibilityHandler, active, greenDot}) => {
     const d = new Date();
     const day = String(d.getDate()).padStart(2, '0');
     const id = `${index + 1}__${currentMonth}`;
@@ -34,7 +35,12 @@ const CalendarDay: React.FC<{
         modalVisibilityHandler(splitedId, {monthsArr, setMonthsArr});
     }
 
-    return <li id={id} key={id} className={`${classes} ${active ? 'calendar__item--active' : ''}`} onClick={() => calendarDayClickHandler(id)}>{content}</li>;
+    return (
+        <li id={id} className={`${classes} ${active ? 'calendar__item--active' : ''}`} onClick={() => calendarDayClickHandler(id)}>
+            {content}
+            {greenDot && <div className='calendar__item--greenDot'></div>}
+        </li>
+    )
 };
 
 export default CalendarDay;

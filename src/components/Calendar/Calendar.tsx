@@ -1,4 +1,4 @@
-import { useState, useEffect, Dispatch, SetStateAction } from "react";
+import { useState, useEffect, useCallback, Dispatch, SetStateAction } from "react";
 import CalendarSlider from "./CalendarSlider/CalendarSlider";
 import { prepareDayFormat } from "../../utils/prepareDateFormat";
 import CalendarDay from "./CalendarDay/CalendarDay";
@@ -12,10 +12,9 @@ const Calendar: React.FC<{modalVisibilityHandler: (clickedMonthData: ModalPropMo
 }> = ({modalVisibilityHandler, setModalVisibility}) => {
     const [month, setMonth] = useState(String(d.getMonth() + 1).padStart(2, '0'));
     const [year, setYear] = useState(d.getFullYear());
-    const [firstDayOfMonth, setFirstDayOfMonth] = useState({id: 0, value: 'Mon'});
     const markCurrentDay =  prepareDayFormat(d.getMonth() + 1) === month;
     const isLeapYear = year % 4 === 0 ? 29 : 28 ;
-
+    
     const daysArr = [
         {id: 0, value: 'Mon'},
         {id: 1, value: 'Tue'},
@@ -26,12 +25,11 @@ const Calendar: React.FC<{modalVisibilityHandler: (clickedMonthData: ModalPropMo
         {id: 6, value: 'Sun'}
     ];
 
-    useEffect(() => {
-        const fullDate = new Date(year, parseInt(month) - 1, 1, 0);
-        const dayOfDate = fullDate.toString().split(' ')[0];
-        const numberOfVoidDays = daysArr.filter((day) => day.value === dayOfDate);
-        setFirstDayOfMonth(numberOfVoidDays[0]);
-     }, [year, month]);
+    let firstDayOfMonth = {id: 0, value: 'Mon'};
+    const fullDate = new Date(year, parseInt(month) - 1, 1, 0);
+    const dayOfDate = fullDate.toString().split(' ')[0];
+    const numberOfVoidDays = daysArr.filter((day) => day.value === dayOfDate);
+    firstDayOfMonth = numberOfVoidDays[0];
 
      const monthsArrDefault = [
         { id: '01', month: 'Jan', days: setDaysToMonth(31) },
@@ -91,8 +89,10 @@ const Calendar: React.FC<{modalVisibilityHandler: (clickedMonthData: ModalPropMo
                 <li className='calendar__weekDay'>Sun</li>
             </ul>
             <ul className="calendar__list">
-                {emptyDays.map((ele) => <li id={`empty__${ele}`} className='calendar__item calendar__item--empty'></li>)}
+                {emptyDays.map((ele) => <li key={`${ele}-${currentMonth!.month}`} id={`empty__${ele}`} className='calendar__item calendar__item--empty'></li>)}
                 {currentMonth!.days instanceof Array ? currentMonth!.days.map((ele: any, index) => {
+                    const { breakfast, brunch, lunch, snacks, dinner} = ele;
+                    const greenDot = breakfast || brunch || lunch || snacks || dinner;
                     return <CalendarDay 
                     index={index} 
                     active={ele.active}
@@ -101,6 +101,8 @@ const Calendar: React.FC<{modalVisibilityHandler: (clickedMonthData: ModalPropMo
                     markCurrentDay={markCurrentDay}
                     monthsArr={monthsArr}
                     modalVisibilityHandler={modalVisibilityHandler}
+                    greenDot={greenDot !== ''}
+                    key={`${index + 1}__${currentMonth}`}
                     />
                 }) : '' }
             </ul>

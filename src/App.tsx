@@ -30,7 +30,7 @@ const App: React.FC = () => {
       await setModalVisibility(true);
       document.querySelector('.modal')!.scrollIntoView(); 
     }
-    
+
     asyncShowModal();
   }, []);
 

@@ -11,13 +11,12 @@
     min-height: 500px;
     margin:0 auto;
     padding-bottom: 15px;
-    transition: .2s ease-in-out;
-    animation: modalAni .6s 0.5s ease-in-out forwards;
-    
+    opacity: 50%;
+    transition: .4s ease-in-out;
 
-    @keyframes modalAni {
-        0% { top: -25px; opacity: 0.5}
-        100% {top: 0px; opacity: 1}
+    &--onPosition {
+        top: 0px;
+        opacity: 100%;
     }
 
     @include mq(medium){
@@ -25,6 +24,8 @@
         flex-direction: row;
         flex-wrap: wrap;
         justify-content: center;
+        min-height: 665px;
+        box-sizing: border-box;
     }
 
     &__header{
