@@ -1,11 +1,15 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, Dispatch, SetStateAction } from "react";
 import CalendarSlider from "./CalendarSlider/CalendarSlider";
 import { prepareDayFormat } from "../../utils/prepareDateFormat";
 import CalendarDay from "./CalendarDay/CalendarDay";
 import { setDaysToMonth } from "../../utils/setDaysToMonth";
+import { ModalPropMonthData, ModalPropMonthArrData } from '../../Types/types';
+import { clearActiveDays } from "../../utils/clearActiveDays";
 
 const d = new Date();
-const Calendar: React.FC = () => {
+const Calendar: React.FC<{modalVisibilityHandler: (clickedMonthData: ModalPropMonthData, monthData: ModalPropMonthArrData) => void,
+    setModalVisibility: Dispatch<SetStateAction<boolean>>,
+}> = ({modalVisibilityHandler, setModalVisibility}) => {
     const [month, setMonth] = useState(String(d.getMonth() + 1).padStart(2, '0'));
     const [year, setYear] = useState(d.getFullYear());
     const [firstDayOfMonth, setFirstDayOfMonth] = useState({id: 0, value: 'Mon'});
@@ -29,29 +33,6 @@ const Calendar: React.FC = () => {
         setFirstDayOfMonth(numberOfVoidDays[0]);
      }, [year, month]);
 
-     const calendarSliderFunc = (direction: string) => {
-        let anotherMonth = direction === 'right' ? parseInt(month) + 1 : parseInt(month) - 1;
-        let anotherMonthPrepString = prepareDayFormat(anotherMonth);
-
-        if(anotherMonthPrepString === '13') {
-            setYear((prevState) => {
-                return prevState + 1;
-            });
-            return setMonth('01');
-        };
-
-        if(anotherMonthPrepString === '00'){
-            setYear((prevState) => {
-                return prevState - 1;
-            });
-            return setMonth('12');
-        };
-
-        setMonth(anotherMonthPrepString)
-     }
-
-     console.log(isLeapYear);
-
      const monthsArrDefault = [
         { id: '01', month: 'Jan', days: setDaysToMonth(31) },
         { id: '02', month: 'Feb', days: setDaysToMonth(isLeapYear)},
@@ -70,6 +51,30 @@ const Calendar: React.FC = () => {
     const [monthsArr, setMonthsArr] = useState(monthsArrDefault);
     const currentMonth = monthsArr.find((currMonth) => currMonth.id === month);
     const emptyDays = Array.from(Array(firstDayOfMonth.id).keys());
+
+    const calendarSliderFunc = (direction: string) => {
+        let anotherMonth = direction === 'right' ? parseInt(month) + 1 : parseInt(month) - 1;
+        let anotherMonthPrepString = prepareDayFormat(anotherMonth);
+
+        if(anotherMonthPrepString === '13') {
+            setYear((prevState) => {
+                return prevState + 1;
+            });
+            return setMonth('01');
+        };
+
+        if(anotherMonthPrepString === '00'){
+            setYear((prevState) => {
+                return prevState - 1;
+            });
+            return setMonth('12');
+        };
+
+        setMonthsArr(clearActiveDays(monthsArr));
+        setModalVisibility(false);
+        setMonth(anotherMonthPrepString)
+     }
+
     return (
         <div className='calendar'>
         <CalendarSlider 
@@ -87,13 +92,15 @@ const Calendar: React.FC = () => {
             </ul>
             <ul className="calendar__list">
                 {emptyDays.map((ele) => <li id={`empty__${ele}`} className='calendar__item calendar__item--empty'></li>)}
-                {currentMonth!.days instanceof Array ? currentMonth!.days.map((ele, index) => {
+                {currentMonth!.days instanceof Array ? currentMonth!.days.map((ele: any, index) => {
                     return <CalendarDay 
                     index={index} 
+                    active={ele.active}
                     setMonthsArr={setMonthsArr}
                     currentMonth={currentMonth!.month} 
                     markCurrentDay={markCurrentDay}
                     monthsArr={monthsArr}
+                    modalVisibilityHandler={modalVisibilityHandler}
                     />
                 }) : '' }
             </ul>

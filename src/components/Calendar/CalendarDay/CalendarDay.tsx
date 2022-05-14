@@ -1,21 +1,15 @@
 import { Dispatch, SetStateAction } from "react";
-
-interface days {
-    id: number,
-    breakfast: string,
-    branch: string,
-    lunch: string,
-    tea: string,
-    dinner: string
-}
+import { Days, ModalPropMonthData, ModalPropMonthArrData } from "../../../Types/types";
 
 const CalendarDay: React.FC<{
     index: number,
-    setMonthsArr: Dispatch<SetStateAction<{ id: string; month: string; days: days[]; }[]>>,
+    active: boolean,
+    setMonthsArr: Dispatch<SetStateAction<{ id: string; month: string; days: Days[]; }[]>>,
     currentMonth: string,
     markCurrentDay: boolean,
-    monthsArr: { id: string; month: string; days: days[]; }[],
-}> = ({index, currentMonth, markCurrentDay, monthsArr, setMonthsArr}) => {
+    monthsArr: { id: string; month: string; days: Days[]; }[],
+    modalVisibilityHandler: (clickedMonthData: ModalPropMonthData, monthData: ModalPropMonthArrData) => void,
+}> = ({index, currentMonth, markCurrentDay, monthsArr, setMonthsArr, modalVisibilityHandler, active}) => {
     const d = new Date();
     const day = String(d.getDate()).padStart(2, '0');
     const id = `${index + 1}__${currentMonth}`;
@@ -23,15 +17,24 @@ const CalendarDay: React.FC<{
     const content = index + 1;
 
     const calendarDayClickHandler = (id: string) => {
-        const copyMonthsArr = [...monthsArr];
         const splitedId = id.split('__');
-        const clickedMonthIndex = monthsArr.findIndex((ele) => ele.month === splitedId[1]);
-        
-        copyMonthsArr[clickedMonthIndex].days[parseInt(splitedId[0]) - 1].breakfast = 'CHUJÓW STO';
-        setMonthsArr(copyMonthsArr);
+
+        const clickedCurrentMonthIndex = monthsArr.findIndex((ele: { id: string; month: string; days: any; }) => {
+            return ele.month === splitedId[1]
+        });
+
+        const copyMonthsArr = [...monthsArr];
+        copyMonthsArr[clickedCurrentMonthIndex].days.forEach((ele) => {
+            if(ele.id === parseInt(splitedId[0]) - 1){
+                ele.active = true;
+            }else ele.active = false;
+            return ele;
+        });
+
+        modalVisibilityHandler(splitedId, {monthsArr, setMonthsArr});
     }
 
-    return <li id={id} key={id} className={classes} onClick={() => calendarDayClickHandler(id)}>{content}</li>;
+    return <li id={id} key={id} className={`${classes} ${active ? 'calendar__item--active' : ''}`} onClick={() => calendarDayClickHandler(id)}>{content}</li>;
 };
 
 export default CalendarDay;
