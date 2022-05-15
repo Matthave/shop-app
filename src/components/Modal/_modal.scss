@@ -101,7 +101,7 @@
     &__snacks{
         @extend .modal__breakfast;
         &::after{
-            content: 'Tea'
+            content: 'Snacks'
         }
         background-color: #FFD279;
     }
@@ -157,18 +157,23 @@
     cursor: pointer;
     transition: .1s ease-in-out;
 
-    &--active {
+    &:hover{
         background-color: #61186b;
         color: #fff;
     }
 
-    &:hover{
+    &--breakfast--active{
         background-color: #61186b;
         color: #fff;
     }
 
     &--brunch{
         border: 2px solid #741f41;
+
+        &--active{
+            background-color: #741f41;
+            color: #fff;
+        }
 
         &:hover{
             background-color: #741f41;
@@ -179,6 +184,11 @@
     &--lunch{
         border: 2px solid #8f3119;
 
+        &--active{
+            background-color: #8f3119;
+            color: #fff;
+        }
+
         &:hover{
             background-color: #8f3119;
             color: #fff;
@@ -188,6 +198,11 @@
     &--snacks{
         border: 2px solid #8b6415;
 
+        &--active{
+            background-color: #8b6415;
+            color: #fff;
+        }
+
         &:hover{
             background-color: #8b6415;
             color: #fff;
@@ -196,6 +211,11 @@
 
     &--dinner{
         border: 2px solid #81811d;
+
+        &--active{
+            background-color:#81811d;
+            color: #fff;
+        }
 
         &:hover{
             background-color: #81811d;
