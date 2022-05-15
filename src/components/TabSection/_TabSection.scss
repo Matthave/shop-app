@@ -1,0 +1,94 @@
+.tab {
+    position: fixed;
+    top:0px;
+    left: calc(100% + 35px);
+
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+
+    width: 35px;
+    height: 100vh;
+    background-color: transparent;
+    animation: tabAnim .3s forwards ease-in-out;
+    transition: 0.3s;
+
+    @keyframes tabAnim {
+        0% { left:calc(100% + 35px);}
+        100% { left:calc(100% - 35px);}
+    }
+
+    &__category{
+        position: relative;
+        writing-mode: vertical-lr;
+        text-orientation: upright;
+        left:0;
+        padding: 7px 0;
+        padding-left: 10px;
+        color: #111;
+        margin-bottom: 5px;
+        text-transform: uppercase;
+        font-size: 12px;
+        letter-spacing: -1px;
+        cursor: pointer;
+        transition: 0.2s ease-in-out;
+        border-top-left-radius: 10px;
+        border-bottom-left-radius: 10px;
+
+        &:hover{
+            left:-5px;
+        }
+
+        &:nth-child(2){
+            transform: translateY(-15px);
+            box-shadow: 2px -3px 2px 2px rgba(0,0,0, 0.4);
+
+            & > div {
+                box-shadow: 4px -3px 2px 2px rgba(0,0,0, 0.3);
+            }
+        }
+
+        &:nth-child(3){
+            transform: translateY(-30px);
+            box-shadow: 4px -3px 2px 2px rgba(0,0,0, 0.3);
+
+            & > div {
+                box-shadow: 4px -3px 2px 2px rgba(0,0,0, 0.3);
+            }
+        }
+
+        &:nth-child(4){
+            transform: translateY(-45px);
+            box-shadow: 4px -3px 2px 2px rgba(0,0,0, 0.3);
+
+            & > div {
+                box-shadow: 4px -3px 2px 2px rgba(0,0,0, 0.3);
+            }
+        }
+
+        &:nth-child(5){
+            transform: translateY(-60px);
+            box-shadow: 4px -3px 2px 2px rgba(0,0,0, 0.3);
+
+            & > div {
+                box-shadow: 4px -3px 2px 2px rgba(0,0,0, 0.3);
+            }
+        }
+
+        &--active{
+            left: -250px;
+            &:hover{
+                left: - 250px
+            }
+        }
+    }
+}
+
+.tab__recipe {
+    position: absolute;
+    top:0px;
+    left:100%;
+    min-height: 500px;
+    width: 300px;
+    border-bottom-left-radius: 10px;
+}

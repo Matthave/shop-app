@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { Dispatch, SetStateAction, useEffect, useState } from 'react';
 import { ModalPropMonthData, ModalPropMonthArrData } from '../../Types/types';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faXmark } from '@fortawesome/free-solid-svg-icons'
@@ -9,15 +9,24 @@ type Categories = {
     url: string
 }
 
+const colors = {
+    breakfast: '#DBA5E1',
+    brunch: '#FFA5C9',
+    lunch: '#FFB3A0',
+    snacks: '#FFD279',
+    dinner: '#F9F871'
+}
+
 const Modal: React.FC <{
     modalData: { 
         modalVisibility: boolean,
         clickedMonthData: ModalPropMonthData, 
         monthData: ModalPropMonthArrData
     }, 
-    closeButton: () => void}> = ({modalData, closeButton}) => {
+    closeButton: () => void,
+    setFlag: Dispatch<SetStateAction<boolean>>,
+    }> = ({modalData, closeButton, setFlag}) => {
     const { clickedMonthData, monthData } = modalData;
-    const [flag, setFlag] = useState(false);
     const [mealByCategories, setMealByCategories] = useState <any>([]);
     const [isLoading, setIsLoading] = useState(true);
     useEffect(() => {
@@ -69,14 +78,26 @@ const Modal: React.FC <{
         asyncFunc();
     }, []);
 
-    const mealItemClickHandler = (meal: string, mealType: string) => {
+    const mealItemClickHandler = (meal: string, mealType: string, mealId: number, mealUrl: string, mealCategory: string) => {
         const clickedCurrentMonthIndex = monthData.monthsArr.findIndex((ele: { id: string; month: string; days: any; }) => {
             return ele.month === clickedMonthData[1]
         });
 
         const copyMonthsArr = [...monthData.monthsArr];
+
+        const colorAllowed = mealCategory === 'breakfast' ||
+         mealCategory === 'brunch' ||
+         mealCategory === 'lunch' || 
+         mealCategory === 'snacks' || 
+         mealCategory === 'dinner';
+
         const clickedCurrentDayMeals = copyMonthsArr[clickedCurrentMonthIndex].days[parseInt(clickedMonthData[0]) - 1];
-        clickedCurrentDayMeals[mealType] = meal;
+        clickedCurrentDayMeals[mealType] = {
+            name: meal,
+            id: mealId,
+            url: mealUrl,
+            color: colorAllowed ? colors[mealCategory] : '#DBA5E1'
+        };
 
         setFlag((prevState) => {
             return !prevState;
@@ -88,7 +109,7 @@ const Modal: React.FC <{
     const currentDaysMeal = currentMonthDays[parseInt(clickedMonthData[0]) - 1];
 
     const findProperlyMeal = (mealType: string) => {
-        return currentDaysMeal[mealType] !== '' ? currentDaysMeal[mealType] : 'Choose'
+        return currentDaysMeal[mealType].name !== '' ? currentDaysMeal[mealType].name : 'Choose'
     }
 
     return <div className={`modal ${!isLoading ? 'modal--onPosition' : ''}`}>
@@ -104,7 +125,7 @@ const Modal: React.FC <{
                         <ul className='modal__ul'>
                             {category.meals.map((meal: any) => {
                                 const activeMeal = findProperlyMeal(category.name) === meal.name ? `modal__li--${meal.category}--active` : '';
-                                return <li key={`${meal.name}-${meal.category}`} className={`modal__li modal__li--${meal.category} ${activeMeal}`} onClick={() => mealItemClickHandler(meal.name, meal.category)}>{meal.name}</li>
+                                return <li key={`${meal.name}-${meal.category}`} className={`modal__li modal__li--${meal.category} ${activeMeal}`} onClick={() => mealItemClickHandler(meal.name, meal.category, meal.id, meal.url, meal.category)}>{meal.name}</li>
                             })}
                         </ul>
                     </div> 

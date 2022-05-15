@@ -74,6 +74,11 @@
             }
         }
 
+        &--greenLightDot {
+            @extend .calendar__item--greenDot;
+            background-color: rgb(61, 180, 61);
+        }
+
         @include mq(small){
             &:hover {
                 font-size: 32px;
