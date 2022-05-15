@@ -7,12 +7,25 @@ export type ModalPropMonthArrData = {
     setMonthsArr: Dispatch<SetStateAction<{ id: string; month: string; days: Days[]; }[]>>
 }
 
+export type eachMealData = {
+    id: number,
+    name: string,
+    url: string
+}
+
 export type Days = {
     active: boolean,
     id: number,
-    breakfast: string,
-    brunch: string,
-    lunch: string,
-    snacks: string,
-    dinner: string
+    breakfast: eachMealData,
+    brunch: eachMealData,
+    lunch: eachMealData,
+    snacks: eachMealData,
+    dinner: eachMealData
 }; 
+
+
+export type ModalData = {
+    modalVisibility: boolean,
+    clickedMonthData: ModalPropMonthData, 
+    monthData: ModalPropMonthArrData
+}

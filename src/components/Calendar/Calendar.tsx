@@ -92,7 +92,7 @@ const Calendar: React.FC<{modalVisibilityHandler: (clickedMonthData: ModalPropMo
                 {emptyDays.map((ele) => <li key={`${ele}-${currentMonth!.month}`} id={`empty__${ele}`} className='calendar__item calendar__item--empty'></li>)}
                 {currentMonth!.days instanceof Array ? currentMonth!.days.map((ele: any, index) => {
                     const { breakfast, brunch, lunch, snacks, dinner} = ele;
-                    const greenDot = breakfast || brunch || lunch || snacks || dinner;
+                    const greenDot = breakfast.name || brunch.name || lunch.name || snacks.name || dinner.name;
                     return <CalendarDay 
                     index={index} 
                     active={ele.active}

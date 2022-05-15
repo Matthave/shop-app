@@ -38,7 +38,7 @@ const CalendarDay: React.FC<{
     return (
         <li id={id} className={`${classes} ${active ? 'calendar__item--active' : ''}`} onClick={() => calendarDayClickHandler(id)}>
             {content}
-            {greenDot && <div className='calendar__item--greenDot'></div>}
+            {greenDot && <div className={active ? 'calendar__item--greenLightDot' : 'calendar__item--greenDot'}></div>}
         </li>
     )
 };
