@@ -23,7 +23,7 @@ const Modal: React.FC <{
     useEffect(() => {
         const getCategoryRequest = async () => {
             try{
-                const response = await fetch('http://itsolutions.hopto.org/api/meals/categories/');
+                const response = await fetch('https://itsolutions.hopto.org/api/meals/categories');
                 const data = await response.json();
                 return data;
             }catch(err){
@@ -34,7 +34,7 @@ const Modal: React.FC <{
         const getEachCategory =  (categories: Categories[]) => {
             const requestHandler = async (url: string, name: string) => {
                 try{
-                    const response = await fetch(`http://itsolutions.hopto.org/${url}`);
+                    const response = await fetch(`https://itsolutions.hopto.org/${url}`);
                     const data = await response.json();
                     const copyData = data.map((ele: any) => {
                         return {...ele, active: ele.active ? ele.active : false};
@@ -53,7 +53,9 @@ const Modal: React.FC <{
                 await requestHandler(categories[2].url, categories[2].name);
                 await requestHandler(categories[3].url, categories[3].name);
                 await requestHandler(categories[4].url, categories[4].name);
-                setIsLoading(false);
+                setTimeout(() => {
+                    setIsLoading(false);
+                }, 700);   
             }
 
             requestFunc();
@@ -101,7 +103,7 @@ const Modal: React.FC <{
                         <button className='modal__button'>{findProperlyMeal(category.name)}</button>
                         <ul className='modal__ul'>
                             {category.meals.map((meal: any) => {
-                                const activeMeal = findProperlyMeal(category.name) === meal.name ? 'modal__li--active' : '';
+                                const activeMeal = findProperlyMeal(category.name) === meal.name ? `modal__li--${meal.category}--active` : '';
                                 return <li key={`${meal.name}-${meal.category}`} className={`modal__li modal__li--${meal.category} ${activeMeal}`} onClick={() => mealItemClickHandler(meal.name, meal.category)}>{meal.name}</li>
                             })}
                         </ul>
