@@ -29,3 +29,11 @@ export type ModalData = {
     clickedMonthData: ModalPropMonthData, 
     monthData: ModalPropMonthArrData
 }
+
+export type dish = {
+    id: number,
+    ingredients: {}[],
+    name: string,
+    recipe: string,
+    servings: number
+}

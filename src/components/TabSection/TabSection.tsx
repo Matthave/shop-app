@@ -22,7 +22,7 @@ const EachMealTab: React.FC<{
                 const response = await fetch('https://itsolutions.hopto.org/api/meals/categories');
                 const data = await response.json();
                 const dataMaped = data.map((ele: CategoriesEle) => {
-                    return { ...ele, active: false }
+                    return { name: ele.name, active: false}
                 })
                 setCategories((dataMaped));
             }catch(err){
