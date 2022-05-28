@@ -3,10 +3,16 @@ import { ModalPropMonthData, ModalPropMonthArrData } from '../../Types/types';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faXmark } from '@fortawesome/free-solid-svg-icons'
 import Loader from "../Loader/Loader";
+import { getCurrentMonthAndDay } from "../../utils/getCurrentMonthAndDay";
 
 type Categories = {
     name: string,
     url: string
+}
+
+type mealCategoryType = {
+    name: string, 
+    meals: {}[]
 }
 
 const colors = {
@@ -27,7 +33,7 @@ const Modal: React.FC <{
     setFlag: Dispatch<SetStateAction<boolean>>,
     }> = ({modalData, closeButton, setFlag}) => {
     const { clickedMonthData, monthData } = modalData;
-    const [mealByCategories, setMealByCategories] = useState <any>([]);
+    const [mealByCategories, setMealByCategories] = useState <mealCategoryType[]>([]);
     const [isLoading, setIsLoading] = useState(true);
     useEffect(() => {
         const getCategoryRequest = async () => {
@@ -112,6 +118,26 @@ const Modal: React.FC <{
         return currentDaysMeal[mealType].name !== '' ? currentDaysMeal[mealType].name : 'Choose'
     }
 
+    const deleteChoosenMeal = (category: {name: string, meals: []}) => {
+        const clickedCurrentMonthIndex = monthData.monthsArr.findIndex((ele: { id: string; month: string; days: any; }) => {
+            return ele.month === clickedMonthData[1]
+        });
+        const copyMonthsArr = [...monthData.monthsArr];
+        const clickedCurrentDayMeals = copyMonthsArr[clickedCurrentMonthIndex].days[parseInt(clickedMonthData[0]) - 1];
+        clickedCurrentDayMeals[category.name] = {
+            name: '',
+            id: '',
+            url: '',
+            color: ''
+        };
+
+        setFlag((prevState) => {
+            return !prevState;
+        })
+    }
+
+            console.log(mealByCategories)
+
     return <div className={`modal ${!isLoading ? 'modal--onPosition' : ''}`}>
         {isLoading && <Loader/>}
         {!isLoading && 
@@ -121,7 +147,10 @@ const Modal: React.FC <{
                 {mealByCategories.map((category: any) => {
                 return (
                     <div key={category.name} className={`modal__${category.name} modal__meal`}>
-                        <button className='modal__button'>{findProperlyMeal(category.name)}</button>
+                        <div className='modal__buttonsWrap'>
+                            <button className='modal__button'>{findProperlyMeal(category.name)}</button>
+                            {findProperlyMeal(category.name) !== 'Choose' && <button onClick={() => deleteChoosenMeal(category)} className='modal__buttonsWrap--close'><FontAwesomeIcon icon={faXmark} /></button>}
+                        </div>
                         <ul className='modal__ul'>
                             {category.meals.map((meal: any) => {
                                 const activeMeal = findProperlyMeal(category.name) === meal.name ? `modal__li--${meal.category}--active` : '';
