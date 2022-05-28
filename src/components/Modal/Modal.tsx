@@ -136,8 +136,6 @@ const Modal: React.FC <{
         })
     }
 
-            console.log(mealByCategories)
-
     return <div className={`modal ${!isLoading ? 'modal--onPosition' : ''}`}>
         {isLoading && <Loader/>}
         {!isLoading && 
