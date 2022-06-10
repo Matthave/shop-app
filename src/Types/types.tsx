@@ -37,3 +37,12 @@ export type dish = {
     recipe: string,
     servings: number
 }
+
+export type NewMeal = {
+    color: string,
+    id: number,
+    name: string,
+    url: string
+    mealType: string,
+    mealDate: { day: number, month: string, year: string, fullDate: string }
+}
