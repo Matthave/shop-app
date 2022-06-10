@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback, Dispatch, SetStateAction } from "react";
+import { useState, Dispatch, SetStateAction } from "react";
 import CalendarSlider from "./CalendarSlider/CalendarSlider";
 import { prepareDayFormat } from "../../utils/prepareDateFormat";
 import CalendarDay from "./CalendarDay/CalendarDay";

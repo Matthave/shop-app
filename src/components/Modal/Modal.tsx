@@ -1,9 +1,8 @@
-import { Dispatch, SetStateAction, useEffect, useState } from 'react';
-import { ModalPropMonthData, ModalPropMonthArrData } from '../../Types/types';
+import { Dispatch, useEffect, useState } from 'react';
+import { ModalPropMonthData, ModalPropMonthArrData, NewMeal } from '../../Types/types';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faXmark } from '@fortawesome/free-solid-svg-icons'
 import Loader from "../Loader/Loader";
-import { getCurrentMonthAndDay } from "../../utils/getCurrentMonthAndDay";
 
 type Categories = {
     name: string,
@@ -30,8 +29,9 @@ const Modal: React.FC <{
         monthData: ModalPropMonthArrData
     }, 
     closeButton: () => void,
-    setFlag: Dispatch<SetStateAction<boolean>>,
-    }> = ({modalData, closeButton, setFlag}) => {
+    setChosenMeal: Dispatch<any>,
+    chosenMeals: any,
+    }> = ({modalData, closeButton, setChosenMeal, chosenMeals}) => {
     const { clickedMonthData, monthData } = modalData;
     const [mealByCategories, setMealByCategories] = useState <mealCategoryType[]>([]);
     const [isLoading, setIsLoading] = useState(true);
@@ -97,17 +97,50 @@ const Modal: React.FC <{
          mealCategory === 'snacks' || 
          mealCategory === 'dinner';
 
-        const clickedCurrentDayMeals = copyMonthsArr[clickedCurrentMonthIndex].days[parseInt(clickedMonthData[0]) - 1];
-        clickedCurrentDayMeals[mealType] = {
+        const newMeal = {
             name: meal,
             id: mealId,
             url: mealUrl,
             color: colorAllowed ? colors[mealCategory] : '#DBA5E1'
+        }
+        const clickedCurrentDayMeals = copyMonthsArr[clickedCurrentMonthIndex].days[parseInt(clickedMonthData[0]) - 1];
+        clickedCurrentDayMeals[mealType] = newMeal;
+        const currentYear = document.querySelector('.calendar__slider--year')?.innerHTML;
+
+        const newMealDate = { 
+            day: clickedCurrentDayMeals.id + 1,
+            month: copyMonthsArr[clickedCurrentMonthIndex].month, 
+            year: currentYear, 
+            fullDate: `${clickedCurrentDayMeals.id + 1} ${copyMonthsArr[clickedCurrentMonthIndex].month} ${currentYear}`
         };
 
-        setFlag((prevState) => {
-            return !prevState;
-        })
+        const newMealAlreadyExist = chosenMeals.findIndex((meal: NewMeal) => {
+            const { mealDate, mealType: innerMealType } = meal;
+            return mealDate.fullDate === newMealDate.fullDate 
+            && innerMealType === mealType 
+        });
+
+        const exactlyThisMealExist = chosenMeals.findIndex((meal: NewMeal) => {
+            const { mealDate, mealType: innerMealType, name, id } = meal;
+            return mealDate.fullDate === newMealDate.fullDate 
+            && innerMealType === mealType 
+            && name === newMeal.name
+            && id === newMeal.id
+        });
+
+        if ( newMealAlreadyExist === -1 ) {
+            setChosenMeal((prevState: any) => {
+                return [...prevState, {...newMeal, mealType, mealDate: newMealDate}];
+            })
+        } 
+        
+        if (newMealAlreadyExist !== -1 && exactlyThisMealExist === -1)  {
+            setChosenMeal(() => {
+                const copyChosenMealsArr = [...chosenMeals];
+                copyChosenMealsArr.splice(newMealAlreadyExist, 1);
+                return [...copyChosenMealsArr, {...newMeal, mealType, mealDate: newMealDate}];
+            })
+        }
     };
 
     const currentBreakfastMeal = monthData.monthsArr;
@@ -119,11 +152,23 @@ const Modal: React.FC <{
     }
 
     const deleteChoosenMeal = (category: {name: string, meals: []}) => {
+        const currentYear = document.querySelector('.calendar__slider--year')?.innerHTML;
         const clickedCurrentMonthIndex = monthData.monthsArr.findIndex((ele: { id: string; month: string; days: any; }) => {
             return ele.month === clickedMonthData[1]
         });
         const copyMonthsArr = [...monthData.monthsArr];
         const clickedCurrentDayMeals = copyMonthsArr[clickedCurrentMonthIndex].days[parseInt(clickedMonthData[0]) - 1];
+        
+        const fullDate = `${clickedCurrentDayMeals.id + 1} ${copyMonthsArr[clickedCurrentMonthIndex].month} ${currentYear}`;
+        const mealsIndexToDelete = chosenMeals.findIndex((meal: NewMeal) => {
+            const { mealDate, mealType, name, id } = meal;
+            return mealDate.fullDate === fullDate 
+            && mealType === category.name 
+            && id === clickedCurrentDayMeals[category.name].id 
+            && name === clickedCurrentDayMeals[category.name].name
+        });
+        chosenMeals.splice(mealsIndexToDelete, 1);
+
         clickedCurrentDayMeals[category.name] = {
             name: '',
             id: '',
@@ -131,9 +176,9 @@ const Modal: React.FC <{
             color: ''
         };
 
-        setFlag((prevState) => {
-            return !prevState;
-        })
+        setChosenMeal(() => {
+            return [...chosenMeals];
+        });
     }
 
     return <div className={`modal ${!isLoading ? 'modal--onPosition' : ''}`}>

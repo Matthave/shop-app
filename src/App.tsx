@@ -2,9 +2,10 @@ import React, { useState, useReducer, useCallback } from 'react';
 import "./css/styles.min.css"
 import Calendar from './components/Calendar/Calendar';
 import Modal from './components/Modal/Modal';
-import { ModalPropMonthData, ModalPropMonthArrData } from './Types/types';
+import { ModalPropMonthData, ModalPropMonthArrData, NewMeal } from './Types/types';
 import { clearActiveDays } from './utils/clearActiveDays';
 import TabSection from './components/TabSection/TabSection';
+import Generate from './components/Generate/Generate';
 
 const modalInitialState = {
 modalVisibility: false,
@@ -25,7 +26,7 @@ const modalReducer = (state:any, action: { type: string, payload?: any }) => {
 const App: React.FC = () => {
   const [modalVisibility, setModalVisibility ] = useState(false);
   const [modalData, disptachModalData] = useReducer(modalReducer, modalInitialState);
-  const [flag, setFlag] = useState(false);
+  const [chosenMeals, setChosenMeal] = useState <NewMeal[]>([]);
   const modalVisibilityHandler = useCallback((clickedMonthData: ModalPropMonthData, monthData: ModalPropMonthArrData) => {
     disptachModalData({type: 'updateData', payload: {clickedMonthData, monthData}})
     const asyncShowModal = async () => {
@@ -45,8 +46,9 @@ const App: React.FC = () => {
   return (
     <div className="App">
       <Calendar modalVisibilityHandler={modalVisibilityHandler} setModalVisibility={setModalVisibility}/>
-      {modalVisibility && <Modal modalData={modalData} closeButton={closeButton} setFlag={setFlag}/>}
+      {modalVisibility && <Modal modalData={modalData} closeButton={closeButton} setChosenMeal={setChosenMeal} chosenMeals={chosenMeals}/>}
       {modalVisibility && <TabSection modalData={modalData}/>}
+      <Generate chosenMeals={chosenMeals}/>
     </div>
   );
 }
