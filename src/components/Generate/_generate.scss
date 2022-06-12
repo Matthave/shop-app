@@ -2,11 +2,11 @@
     display: flex;
     flex-direction: column;
     width: 100%;
-    min-height: 250px;
+    min-height: 350px;
     background-color: #3f51b5;
     padding: 20px;
     box-sizing: border-box;
-    margin-bottom: 25px;
+    margin-bottom: 40px;
 
     &__title {
         color: #fff;
@@ -27,7 +27,7 @@
     &__ul {
         display: flex;
         flex-wrap: wrap;
-        justify-content: space-evenly;
+        justify-content: center;
         width: 100%;
         list-style-type: none;
         margin: auto 0;
@@ -52,5 +52,12 @@
             background-color: #fff;
             color: #3f51b5;
         }
+    }
+
+    &__btn {
+        width: 200px;
+        height: 40px;
+        cursor: pointer;
+        margin: 20px auto 5px;
     }
 }

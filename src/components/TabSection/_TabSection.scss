@@ -90,6 +90,13 @@
                     left: -340px
                 }
             }
+
+            @include mq(medium) {
+                left: -400px;
+                &:hover{
+                    left: -400px
+                }
+            }
             }
     }
 }
@@ -109,6 +116,10 @@
 
     @include mq(medium){
         width: 340px;
+    }
+
+    @include mq(large){
+        width: 400px
     }
 
     &::-webkit-scrollbar{
@@ -139,6 +150,11 @@
         list-style-type: none;
         text-transform: initial;
         margin-right: 32px;
+
+        @include mq(large){
+            margin-right: 45px;
+            margin-left: 10px;
+        }
 
         &--title{
             @extend .tab__recipe--title;

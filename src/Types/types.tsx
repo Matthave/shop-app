@@ -46,3 +46,9 @@ export type NewMeal = {
     mealType: string,
     mealDate: { day: number, month: string, year: string, fullDate: string }
 }
+
+export type IngredientsType = {
+    ingredient: string,
+    quantity: number,
+    unit: string
+  }

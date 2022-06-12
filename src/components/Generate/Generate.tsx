@@ -3,8 +3,28 @@ import { NewMeal } from '../../Types/types';
 import Tooltip from './Tooltip/Tooltip';
 import { v4 as uuidv4 } from 'uuid';
 
-const Generate: React.FC <{ chosenMeals: any }> = ({chosenMeals}) => {
+const Generate: React.FC <{ chosenMeals: any, ingredientsLoaderFunc: any }> = ({chosenMeals, ingredientsLoaderFunc}) => {
     const [ showTooltip, setShopTooltip ] = useState ({id: -1, visibility: false});
+    const generateShoppingList = () => {
+        let query = '';
+        chosenMeals.map((meal: any, index: number) => {
+            const mealStringIds = meal.id.toString();
+            if (index === 0) query = `meal=${mealStringIds}`;
+            else query += `&meal=${mealStringIds}`;
+        });
+
+        const generateRequest = async () => {
+            try{
+                const response = await fetch(`https://itsolutions.hopto.org/api/meals/generate?${query}`);
+                const data = await response.json();
+                ingredientsLoaderFunc(data?.ingredients);
+            }catch(err){
+                console.error(err)
+            }
+        }
+
+        generateRequest();
+    }
 
     const trimString = (name: string) => {
         if (name.includes('video')){
@@ -34,9 +54,12 @@ const Generate: React.FC <{ chosenMeals: any }> = ({chosenMeals}) => {
         {mealsList.length === 0 ? 
             <p className='generate__placeholder'>Add some meal</p> 
             : 
-             <ul className="generate__ul">
-                {mealsList}
-            </ul>
+            <>
+                <ul className="generate__ul">
+                    {mealsList}
+                </ul>
+                <button onClick={generateShoppingList} className='generate__btn'>Generate shopping list</button>
+            </>
         }
     </div>
 }
