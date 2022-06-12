@@ -12,6 +12,7 @@
     background-color: transparent;
     animation: tabAnim .3s forwards ease-in-out;
     transition: 0.3s;
+    z-index: 1;
 
     @keyframes tabAnim {
         0% { left:calc(100% + 35px);}
@@ -91,7 +92,7 @@
                 }
             }
 
-            @include mq(medium) {
+            @include mq(large) {
                 left: -400px;
                 &:hover{
                     left: -400px
