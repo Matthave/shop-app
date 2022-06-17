@@ -25,17 +25,30 @@
         justify-content: center;
         align-items: center;
 
-        width: 150px;
-        height: 150px;
+        width: 130px;
+        height: 130px;
         margin: 0 9px 15px 9px;
         box-sizing: border-box;
         border-radius: 20px;
         overflow: hidden;
         cursor: pointer;
 
+        @include mq(small) {
+            width: 200px;
+            height: 200px;
+        }
+
         @include mq(medium) {
             width: 280px;
             height: 280px;
+
+            &:hover > .ingredients__name {
+                height: 100%;
+            }
+
+            &:hover > .ingredients__unit {
+                height: 0px;
+            }
         }
     }
 
@@ -66,6 +79,7 @@
         @extend .ingredients__name;
         height: 20%;
         background-color: rgba(33,98,33, 0.7);
+        overflow: hidden;
 
         &--unActive{
             background-color: rgba(0,0,0, 0.7);

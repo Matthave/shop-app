@@ -1,4 +1,5 @@
 import React, { useState, useReducer, useCallback } from 'react';
+import { useWindowScroll } from "react-use";
 import "./css/styles.min.css"
 import Calendar from './components/Calendar/Calendar';
 import Modal from './components/Modal/Modal';
@@ -7,6 +8,7 @@ import { clearActiveDays } from './utils/clearActiveDays';
 import TabSection from './components/TabSection/TabSection';
 import Generate from './components/Generate/Generate';
 import Ingredients from './components/Ingredients/Ingredients';
+import ToTopButton from './components/ToTopButton/ToTopButton';
 
 const modalInitialState = {
 modalVisibility: false,
@@ -29,6 +31,7 @@ const App: React.FC = () => {
   const [modalData, disptachModalData] = useReducer(modalReducer, modalInitialState);
   const [chosenMeals, setChosenMeal] = useState <NewMeal[]>([]);
   const [ingredients, setIngredients] = useState<IngredientsType[]>([]);
+  const {y: pageYOffSet} = useWindowScroll();
   const modalVisibilityHandler = useCallback((clickedMonthData: ModalPropMonthData, monthData: ModalPropMonthArrData) => {
     disptachModalData({type: 'updateData', payload: {clickedMonthData, monthData}})
     const asyncShowModal = async () => {
@@ -56,6 +59,7 @@ const App: React.FC = () => {
       {modalVisibility && <TabSection modalData={modalData}/>}
       <Generate chosenMeals={chosenMeals} ingredientsLoaderFunc={ingredientsLoaderFunc}/>
       <Ingredients ingredients={ingredients}/>
+      {pageYOffSet >= 500 && <ToTopButton/>}
     </div>
   );
 }
